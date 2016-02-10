@@ -25,6 +25,16 @@ int mazo[16] = {5,4,6,7,1,2,3,0,4,3,0,7,1,5,6,2};
 bool expuesta[16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 bool destapado[16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 
+bool allTrue() {
+    bool status = true;
+    for (int i = 0; i <= 15 ; i++) {
+        if (destapado[i] == false) {
+            status = false;
+            break;
+        }
+    }
+    return status;
+}
 
 void myTimer(int i) {
     if ( start){
@@ -99,69 +109,95 @@ void despliegaMazo(){
             //glColor3ub(100, 100, 100);
             glVertex2f(posX, posYtop);
         }
+        glEnd();
         
-        //if (expuesta[i]) {
+        if (expuesta[i] || destapado[i]) {
             GLint k;
             char mensaje7 [200] = "";
-            sprintf(mensaje7,"%s", "hola");
+            sprintf(mensaje7,"%d", mazo[i]);
             glColor3f(0, 0, 1);
             glRasterPos2f(posX+5, posYbottom+10); // inicializa raster position
             for (k=0; mensaje7[k] != '\0'; k++) {
                 glColor3f(0, 0, 1);
                 glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje7[k]);
             }
-        //}
         
-        glEnd();
+        }
+        
+        
         posX += 43.75;
     }
 }
 
 void dibujaInfo() {
-    
-    GLint k;
-    char mensaje3 [200] = "";
-    sprintf(mensaje3,"Turns: %d", turnos);
-    glColor3f(1, 1, 1);
-    glRasterPos2f(500, 200); // inicializa raster position
-    for (k=0; mensaje3[k] != '\0'; k++) {
+    if (allTrue()) {
+        glBegin(GL_POLYGON);
+        glColor3ub(255, 100, 100);
+        glVertex2f(50, 120);
+        //glColor3ub(100, 100, 100);
+        glVertex2f(650, 120);
+        //glColor3ub(100, 100, 100);
+        glVertex2f(650, 400);
+        //glColor3ub(100, 100, 100);
+        glVertex2f(50, 400);
+        glEnd();
+        
+        GLint k;
+        char mensaje7 [200] = "";
+        sprintf(mensaje7,"Felicidades! lo lograste en %d Pasos", turnos);
+        glColor3f(0, 0, 1);
+        glRasterPos2f(120, 300); // inicializa raster position
+        for (k=0; mensaje7[k] != '\0'; k++) {
+            glColor3f(0, 0, 1);
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje7[k]);
+        }
+        start = false;
+        
+    } else {
+        GLint k;
+        char mensaje3 [200] = "";
+        sprintf(mensaje3,"Turns: %d", turnos);
         glColor3f(1, 1, 1);
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje3[k]);
-    }
-    
-    char mensaje4 [200] = "";
-    sprintf(mensaje4, "%s", "Autores: Jorge Perales, Matricula:00813101");
-    glColor3f(1, 1, 1);
-    glRasterPos2f(20, 130); // inicializa raster position
-    for (k=0; mensaje4[k] != '\0'; k++) {
+        glRasterPos2f(500, 200); // inicializa raster position
+        for (k=0; mensaje3[k] != '\0'; k++) {
+            glColor3f(1, 1, 1);
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje3[k]);
+        }
+        
+        char mensaje4 [200] = "";
+        sprintf(mensaje4, "%s", "Autores: Jorge Perales, Matricula:00813101");
         glColor3f(1, 1, 1);
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje4[k]);
-    }
-    char mensaje5 [200] = "";
-    sprintf(mensaje5, "%s", "Diego Aleman, Matricula:11934700");
-    glColor3f(1, 1, 1);
-    glRasterPos2f(100, 100); // inicializa raster position
-    for (k=0; mensaje5[k] != '\0'; k++) {
+        glRasterPos2f(20, 130); // inicializa raster position
+        for (k=0; mensaje4[k] != '\0'; k++) {
+            glColor3f(1, 1, 1);
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje4[k]);
+        }
+        char mensaje5 [200] = "";
+        sprintf(mensaje5, "%s", "Diego Aleman, Matricula:11934700");
         glColor3f(1, 1, 1);
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje5[k]);
-    }
-    
-    char mensaje [200] = "";
-    sprintf(mensaje, "%s", "I-Iniciar, P-Pausa, R-Reset");
-    glColor3f(1, 1, 1);
-    glRasterPos2f(100, 70); // inicializa raster position
-    for (k=0; mensaje[k] != '\0'; k++) {
+        glRasterPos2f(100, 100); // inicializa raster position
+        for (k=0; mensaje5[k] != '\0'; k++) {
+            glColor3f(1, 1, 1);
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje5[k]);
+        }
+        
+        char mensaje [200] = "";
+        sprintf(mensaje, "%s", "I-Iniciar, P-Pausa, R-Reset");
         glColor3f(1, 1, 1);
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje[k]);
-    }
-    
-    char mensaje2 [200] = "";
-    sprintf(mensaje2, "%s", "Esc-Salir");
-    glColor3f(1, 1, 1);
-    glRasterPos2f(400, 70);
-    for (k=0; mensaje2[k] != '\0'; k++) {
+        glRasterPos2f(100, 70); // inicializa raster position
+        for (k=0; mensaje[k] != '\0'; k++) {
+            glColor3f(1, 1, 1);
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje[k]);
+        }
+        
+        char mensaje2 [200] = "";
+        sprintf(mensaje2, "%s", "Esc-Salir");
         glColor3f(1, 1, 1);
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje2[k]);
+        glRasterPos2f(400, 70);
+        for (k=0; mensaje2[k] != '\0'; k++) {
+            glColor3f(1, 1, 1);
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje2[k]);
+        }
     }
 }
 
@@ -231,7 +267,7 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
             start = false;
             turnos = 0;
             clickCarta = 0;
-            for (int i = 0; i < 15; i++) {
+            for (int i = 0; i <= 15; i++) {
                 expuesta[i] = false;
                 destapado[i] = false;
             }
@@ -264,7 +300,7 @@ int calculaCarta(int x, int y){
 bool pares() {
     int aux1 = 0, aux2 = 0;
     bool encontro1 = false;
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i <= 15; i++) {
         if (expuesta[i]) {
             if (encontro1 == false){
                 aux1=i;
@@ -287,27 +323,29 @@ bool pares() {
     }
 }
 
+
 void mouse(int button, int state, int x, int y){
     if (start) {
         if(button == GLUT_LEFT_BUTTON){
             if(state == GLUT_DOWN){
                 int posicion = calculaCarta(x, 640-y);
                 
-                if (expuesta[posicion] == false) {
+                if (expuesta[posicion] == false && destapado[posicion] == false) {
                     clickCarta++;
                 }
                 if (clickCarta > 2) {
                     pares();
                     turnos++;
-                    for (int i = 0; i < 15; i++) {
+                    for (int i = 0; i <= 15; i++) {
                         expuesta[i] = false;
                     }
                     clickCarta = 1;
                 }
                 
-                if (posicion >= 0) {
+                if (posicion >= 0 && destapado[posicion] == false) {
                     expuesta[posicion] = true;
                 }
+                
                 myDisplay();
             }
         }
