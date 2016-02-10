@@ -53,42 +53,9 @@ void reshape(int ancho, int alto) {
     
 }
 
-void cronometro() {
+void dibujaInfo() {
     
     GLint k;
-    
-    char msg [200] = "";
-    
-    int a,b,c;
-    
-    float x = sumaTotal / 10.0;
-    b = x;
-    
-    x = x - b;
-    
-    x = x * 10;
-    c=x;
-    
-    a = b /60;
-    b = b %60;
-    
-    
-    
-    if (b <= 9) {
-        sprintf(msg, "%d : 0%d : %d", a, b , c);
-    } else {
-        sprintf(msg, "%d : %d : %d", a, b , c);
-    }
-    
-    
-    
-    glColor3f(1, 1, 1);
-    glRasterPos2f(50, 200); // inicializa raster position
-    for (k=0; msg[k] != '\0'; k++) {
-        glColor3f(1, 1, 1);
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, msg[k]);
-    }
-    
     char mensaje3 [200] = "";
     sprintf(mensaje3,"Turns: %d", turnos);
     glColor3f(1, 1, 1);
@@ -132,6 +99,44 @@ void cronometro() {
         glColor3f(1, 1, 1);
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje2[k]);
     }
+}
+
+void cronometro() {
+    
+    GLint k;
+    
+    char msg [200] = "";
+    
+    int a,b,c;
+    
+    float x = sumaTotal / 10.0;
+    b = x;
+    
+    x = x - b;
+    
+    x = x * 10;
+    c=x;
+    
+    a = b /60;
+    b = b %60;
+    
+    
+    
+    if (b <= 9) {
+        sprintf(msg, "%d : 0%d : %d", a, b , c);
+    } else {
+        sprintf(msg, "%d : %d : %d", a, b , c);
+    }
+    
+    
+    glColor3f(1, 1, 1);
+    glRasterPos2f(50, 200); // inicializa raster position
+    for (k=0; msg[k] != '\0'; k++) {
+        glColor3f(1, 1, 1);
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, msg[k]);
+    }
+    
+    
     
 }
 
@@ -141,7 +146,7 @@ void myDisplay()
     glClear( GL_COLOR_BUFFER_BIT );
     glColor3f( 1.0f, 0.0f, 0.0f ); //Color para pintar
     cronometro();
-    
+    dibujaInfo();
     
     glutSwapBuffers();
     
