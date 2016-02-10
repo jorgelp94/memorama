@@ -16,11 +16,14 @@ float t=-1.0;
 float delta=0.1;
 
 int turnos = 0;
+int clickCarta = 0;
+
 int sumaTotal = 0;
 bool start = false;
 
 int mazo[16] = {5,4,6,7,1,2,3,0,4,3,0,7,1,5,6,2};
 bool expuesta[16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+bool destapado[16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 
 
 void myTimer(int i) {
@@ -36,7 +39,7 @@ void myTimer(int i) {
 
 
 
-int	screenWidth = 640, screenHeight = 640;
+int	screenWidth = 700, screenHeight = 640;
 
 void reshape(int ancho, int alto) {
     
@@ -51,6 +54,67 @@ void reshape(int ancho, int alto) {
     gluOrtho2D( 0.0,(GLdouble) ancho, 0.0,(GLdouble)  alto);
     
     
+}
+
+void despliegaMazo(){
+    
+    float posX, posYbottom, posYtop;
+    posX = 0;
+    posYtop = 640;
+    posYbottom = 400;
+    
+    for (int i=0; i<=15; i++){
+        //glClear(GL_COLOR_BUFFER_BIT);
+        glBegin(GL_POLYGON);
+        if (i%2 == 0) {
+            if (expuesta[i]) {
+                glColor3ub(0, 255, 0);
+            } else if (destapado[i]) {
+                glColor3ub(255, 255, 0);
+            } else {
+               glColor3ub(255, 255, 255);
+            }
+            
+            glVertex2f(posX, posYbottom);
+            //glColor3ub(255, 255, 255);
+            glVertex2f(posX+43.7, posYbottom);
+            //glColor3ub(255, 255, 255);
+            glVertex2f(posX+43.5, posYtop);
+            //glColor3ub(255, 255, 255);
+            glVertex2f(posX, posYtop);
+        } else {
+            if (expuesta[i]) {
+                glColor3ub(0, 255, 0);
+            } else if (destapado[i]) {
+                glColor3ub(255, 255, 0);
+            } else {
+                glColor3ub(100, 100, 100);
+            }
+            
+            glVertex2f(posX, posYbottom);
+            //glColor3ub(100, 100, 100);
+            glVertex2f(posX+43.7, posYbottom);
+            //glColor3ub(100, 100, 100);
+            glVertex2f(posX+43.5, posYtop);
+            //glColor3ub(100, 100, 100);
+            glVertex2f(posX, posYtop);
+        }
+        
+        //if (expuesta[i]) {
+            GLint k;
+            char mensaje7 [200] = "";
+            sprintf(mensaje7,"%s", "hola");
+            glColor3f(0, 0, 1);
+            glRasterPos2f(posX+5, posYbottom+10); // inicializa raster position
+            for (k=0; mensaje7[k] != '\0'; k++) {
+                glColor3f(0, 0, 1);
+                glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje7[k]);
+            }
+        //}
+        
+        glEnd();
+        posX += 43.75;
+    }
 }
 
 void dibujaInfo() {
@@ -147,6 +211,7 @@ void myDisplay()
     glColor3f( 1.0f, 0.0f, 0.0f ); //Color para pintar
     cronometro();
     dibujaInfo();
+    despliegaMazo();
     
     glutSwapBuffers();
     
@@ -164,6 +229,12 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
         case 'R':
         case 'r':
             start = false;
+            turnos = 0;
+            clickCarta = 0;
+            for (int i = 0; i < 15; i++) {
+                expuesta[i] = false;
+                destapado[i] = false;
+            }
             sumaTotal = 0;
             break;
         case 'P':
@@ -179,8 +250,69 @@ void myKeyboard(unsigned char theKey, int mouseX, int mouseY) {
     }
 }
 
+int calculaCarta(int x, int y){
+    if (y >= 400 && y <= 640) {
+        
+        float carta = x/43.75;
+        return (int)carta;
+    } else {
+        return -1;
+    }
+}
 
 
+bool pares() {
+    int aux1 = 0, aux2 = 0;
+    bool encontro1 = false;
+    for (int i = 0; i < 15; i++) {
+        if (expuesta[i]) {
+            if (encontro1 == false){
+                aux1=i;
+                encontro1 = true;
+            }
+            else if (encontro1){
+                aux2=i;
+                continue;
+            }
+            
+        }
+    }
+    
+    if (mazo[aux1] == mazo[aux2]) {
+        destapado[aux1] = true;
+        destapado[aux2] = true;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void mouse(int button, int state, int x, int y){
+    if (start) {
+        if(button == GLUT_LEFT_BUTTON){
+            if(state == GLUT_DOWN){
+                int posicion = calculaCarta(x, 640-y);
+                
+                if (expuesta[posicion] == false) {
+                    clickCarta++;
+                }
+                if (clickCarta > 2) {
+                    pares();
+                    turnos++;
+                    for (int i = 0; i < 15; i++) {
+                        expuesta[i] = false;
+                    }
+                    clickCarta = 1;
+                }
+                
+                if (posicion >= 0) {
+                    expuesta[posicion] = true;
+                }
+                myDisplay();
+            }
+        }
+    }
+}
 
 
 int main( int argc, char ** argv ) {
@@ -192,6 +324,7 @@ int main( int argc, char ** argv ) {
     glutCreateWindow( "Memorama" );
     glutDisplayFunc( myDisplay );
     glutKeyboardFunc(myKeyboard);
+    glutMouseFunc(mouse);
     glutReshapeFunc(reshape);
     glutTimerFunc(100,myTimer,1);
     
