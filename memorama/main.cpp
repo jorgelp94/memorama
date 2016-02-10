@@ -173,7 +173,7 @@ void dibujaInfo() {
             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, mensaje4[k]);
         }
         char mensaje5 [200] = "";
-        sprintf(mensaje5, "%s", "Diego Aleman, Matricula:11934700");
+        sprintf(mensaje5, "%s", "Diego Aleman, Matricula:1139700");
         glColor3f(1, 1, 1);
         glRasterPos2f(100, 100); // inicializa raster position
         for (k=0; mensaje5[k] != '\0'; k++) {
